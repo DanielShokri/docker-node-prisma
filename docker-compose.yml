@@ -1,6 +1,20 @@
-version: '2'
+version: '3'
 
 services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: webapp_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   backend:
     build: .
     ports:
@@ -13,13 +27,8 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgres://postgres@postgres/webapp_dev
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/webapp_dev?schema=public
       PORT: 8000
 
-  postgres:
-    image: postgres:14-alpine
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_DB: webapp_dev
-      POSTGRES_HOST_AUTH_METHOD: trust
+volumes:
+  postgres-data:

@@ -5,6 +5,8 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install
 
+COPY .env ./
+
 COPY prisma/schema.prisma ./prisma/
 RUN npx prisma generate
 
