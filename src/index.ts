@@ -2,13 +2,14 @@ import express from 'express';
 import morgan from 'morgan';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'] });
 const app = express();
 app.use(morgan('dev'));
 
 app.get('/', async (req, res) => {
   const posts = await prisma.post.findMany();
-  res.json(posts);
+  if (!posts) res.status(404).json({ message: 'Not found' });
+  else res.json(posts);
   // res.json({ hello: 'world!!!' });
 });
 
